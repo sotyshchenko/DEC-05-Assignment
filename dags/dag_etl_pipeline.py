@@ -45,22 +45,13 @@ def transform(**kwargs):
         .merge(emp_df,  how='left', left_on='SalesPersonID', right_on='EmployeeID')
         .merge(prod_df, how='left', on='ProductID')
     )
-    df['TotalPrice'] = df['Quantity'] * df["Price"]
-    df['SalesPersonName'] = df['FirstName'].str.strip() + " " + df['LastName'].str.strip()
+    df['TotalPrice'] = df['Quantity'] * df['Price']
+    df['SalesPersonName'] = df['FirstName'].str.strip() + ' ' + df['LastName'].str.strip()
 
     df = df[[
         'SalesID', 'SalesDate', 'ProductName', 'Price', 'Quantity',
         'TotalPrice', 'SalesPersonName'
     ]]
-
-    # write intermediate CSV into a host‑visible tmp folder
-    out_dir = PROJECT_DIR / 'tmp'
-    out_dir.mkdir(parents=True, exist_ok=True)
-    result_path = out_dir / 'etl_result.csv'
-    df.to_csv(result_path, index=False)
-
-
-    ti.xcom_push(key='result_path', value=str(result_path))
 
 
 def load_to_db(**kwargs):
